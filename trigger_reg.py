@@ -2,7 +2,12 @@ import tkinter as tk
 
 def calculate_result():
     # 从输入框中获取每个位的值
-    bit_values = [int(entry.get()) for entry in bit_entries]
+    bit_values = []
+    for entry, bit_range in zip(bit_entries, bit_ranges):
+        start_bit = bit_range[0]
+        end_bit = bit_range[1]
+        value = int(entry.get(), 2)
+        bit_values.extend([(value >> (end_bit - i)) & 1 for i in range(end_bit, start_bit - 1, -1)])
     
     # 将位值按照第2列的bit位组合成一个整数
     result = sum(bit_values[i] << (15 - i) for i in range(len(bit_values)))
@@ -20,11 +25,26 @@ def reset_bits():
 window = tk.Tk()
 window.title("位值计算器")
 
-# 创建位值输入框和标签
+# 创建位值输入框、标签和位范围
 bit_entries = []
 bit_labels = []
-for i in range(16):
-    bit_label = tk.Label(window, text="[{}]".format(15 - i))
+bit_ranges = [
+    (15, 15),  # [15]
+    (14, 12),  # [14:12]
+    (11, 10),  # [11:10]
+    (9, 9),    # [9]
+    (8, 8),    # [8]
+    (7, 6),    # [7:6]
+    (5, 5),    # [5]
+    (4, 4),    # [4]
+    (3, 3),    # [3]
+    (2, 0)     # [2:0]
+]
+
+for i, bit_range in enumerate(bit_ranges):
+    start_bit = bit_range[0]
+    end_bit = bit_range[1]
+    bit_label = tk.Label(window, text="[{}:{}]".format(start_bit, end_bit))
     bit_label.grid(row=i, column=0)
     bit_labels.append(bit_label)
     
@@ -35,15 +55,15 @@ for i in range(16):
 
 # 创建计算按钮
 calculate_button = tk.Button(window, text="计算", command=calculate_result)
-calculate_button.grid(row=16, column=0, columnspan=2)
+calculate_button.grid(row=len(bit_ranges), column=0, columnspan=2)
 
 # 创建结果标签
 result_label = tk.Label(window, text="结果: ")
-result_label.grid(row=17, column=0, columnspan=2)
+result_label.grid(row=len(bit_ranges) + 1, column=0, columnspan=2)
 
 # 创建重置按钮
 reset_button = tk.Button(window, text="重置", command=reset_bits)
-reset_button.grid(row=18, column=0, columnspan=2)
+reset_button.grid(row=len(bit_ranges) + 2, column=0, columnspan=2)
 
 # 运行窗口主循环
 window.mainloop()
