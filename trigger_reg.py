@@ -18,8 +18,8 @@ def calculate_result():
         start_bit = bit_range[0]
         end_bit = bit_range[1]
         row_result = int(bits, 2) << (15 - start_bit)
-        row_results.append("{:04X}".format(row_result))
-        bit_logs[i] = "{} ({})".format(bits, row_results[i])
+        row_results.append(row_result)
+        bit_logs[i] = "{} ({})".format(bits, hex(row_result))
 
     # 将位值按照第2列的bit位组合成一个整数
     result = sum(row_results)
