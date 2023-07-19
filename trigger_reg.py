@@ -12,15 +12,22 @@ def calculate_result():
         bit_values.extend(bits)
         bit_logs.extend(["1" if bit else "0" for bit in bits])
     
+    # 按照每行的计算结果进行打印
+    row_results = []
+    for i, (bit_range, bits) in enumerate(zip(bit_ranges, bit_logs)):
+        start_bit = bit_range[0]
+        end_bit = bit_range[1]
+        row_result = int(bits, 2) << (15 - start_bit)
+        row_results.append("{:04X}".format(row_result))
+        bit_logs[i] = "{} ({})".format(bits, row_results[i])
+
     # 将位值按照第2列的bit位组合成一个整数
-    result = 0
-    for i, bit_value in enumerate(bit_values):
-        result |= bit_value << (15 - i)
+    result = sum(row_results)
     
     # 显示结果
     result_label.config(text="结果: 0x{:04X}".format(result))
 
-    # 将输入和计算结果写入日志文件
+    # 将输入、每行计算过程和结果写入日志文件
     with open('log.txt', 'a') as log_file:
         log_file.write("输入: {}\n".format(' '.join([entry.get() for entry in bit_entries])))
         log_file.write("计算过程: {}\n".format(' '.join(bit_logs)))
