@@ -3,14 +3,19 @@ import tkinter as tk
 def calculate_result():
     # 从输入框中获取每个位的值
     bit_values = []
+    bit_logs = []
     for entry, bit_range in zip(bit_entries, bit_ranges):
         start_bit = bit_range[0]
         end_bit = bit_range[1]
         value = int(entry.get(), 2)
-        bit_values.extend([(value >> (end_bit - i)) & 1 for i in range(end_bit, start_bit - 1, -1)])
+        bits = [(value >> (end_bit - i)) & 1 for i in range(end_bit, start_bit - 1, -1)]
+        bit_values.extend(bits)
+        bit_logs.extend(["1" if bit else "0" for bit in bits])
     
     # 将位值按照第2列的bit位组合成一个整数
-    result = sum(bit_values[i] << (15 - i) for i in range(len(bit_values)))
+    result = 0
+    for i, bit_value in enumerate(bit_values):
+        result |= bit_value << (15 - i)
     
     # 显示结果
     result_label.config(text="结果: 0x{:04X}".format(result))
@@ -18,7 +23,8 @@ def calculate_result():
     # 将输入和计算结果写入日志文件
     with open('log.txt', 'a') as log_file:
         log_file.write("输入: {}\n".format(' '.join([entry.get() for entry in bit_entries])))
-        log_file.write("结果: 0x{:04X}\n".format(result))
+        log_file.write("计算过程: {}\n".format(' '.join(bit_logs)))
+        log_file.write("结果: 0x{:04X}\n\n".format(result))
 
 def reset_bits():
     # 将输入框中的位值重置为0
