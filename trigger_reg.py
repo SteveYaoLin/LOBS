@@ -1,37 +1,29 @@
 import tkinter as tk
 
 def calculate_result():
-    # 从输入框中获取每个位的值
-    bit_values = []
-    bit_logs = []
-    for entry, bit_range in zip(bit_entries, bit_ranges):
-        start_bit = bit_range[0]
-        end_bit = bit_range[1]
-        value = int(entry.get(), 2)
-        bits = [(value >> (end_bit - i)) & 1 for i in range(end_bit, start_bit - 1, -1)]
-        bit_values.extend(bits)
-        bit_logs.extend(["1" if bit else "0" for bit in bits])
-    
-    # 按照每行的计算结果进行打印
+    # 打开日志文件
+    log_file = open('log.txt', 'w')
+
+    # 计算每一行的结果，并记录到日志文件
     row_results = []
-    for i, (bit_range, bits) in enumerate(zip(bit_ranges, bit_logs)):
+    for i, (bit_range, entry) in enumerate(zip(bit_ranges, bit_entries)):
         start_bit = bit_range[0]
         end_bit = bit_range[1]
-        row_result = int(bits, 2) << (15 - start_bit)
+        value = int(entry.get())
+        row_result = value << (end_bit)
         row_results.append(row_result)
-        bit_logs[i] = "{} ({})".format(bits, hex(row_result))
+        log_file.write("输入值: bit{} = {}\n".format(start_bit, value))
+        log_file.write("第{}行结果: {}\n".format(i+1, hex(row_result)))
 
-    # 将位值按照第2列的bit位组合成一个整数
+    # 计算总体结果
     result = sum(row_results)
-    
-    # 显示结果
-    result_label.config(text="结果: 0x{:04X}".format(result))
+    log_file.write("总体结果: {}\n".format(hex(result)))
 
-    # 将输入、每行计算过程和结果写入日志文件
-    with open('log.txt', 'a') as log_file:
-        log_file.write("输入: {}\n".format(' '.join([entry.get() for entry in bit_entries])))
-        log_file.write("计算过程: {}\n".format(' '.join(bit_logs)))
-        log_file.write("结果: 0x{:04X}\n\n".format(result))
+    # 关闭日志文件
+    log_file.close()
+
+    # 显示结果
+    result_label.config(text="结果: {}".format(hex(result)))
 
 def reset_bits():
     # 将输入框中的位值重置为0
