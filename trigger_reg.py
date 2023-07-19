@@ -15,6 +15,11 @@ def calculate_result():
     # 显示结果
     result_label.config(text="结果: 0x{:04X}".format(result))
 
+    # 将输入和计算结果写入日志文件
+    with open('log.txt', 'a') as log_file:
+        log_file.write("输入: {}\n".format(' '.join([entry.get() for entry in bit_entries])))
+        log_file.write("结果: 0x{:04X}\n".format(result))
+
 def reset_bits():
     # 将输入框中的位值重置为0
     for entry in bit_entries:
