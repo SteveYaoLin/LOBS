@@ -39,15 +39,15 @@ window.title("位值计算器")
 bit_entries = []
 bit_labels = []
 reg_names = [
-    "ALTCOMPSEL",
+    "ALTCOMPSEL 0: COMP ; 1:counter",
     "ALTCOMP",
     "CAPTID",
     "COUNTBRK",
     "COUNTCLR",
-    "TRACE",
-    "COUNTSRC",
+    "TRACE 11:ELACLK; 00: COMP; 01:counter",
+    "COUNTSRC 0:ELACLK; 1:COMP match",
     "WATCHRST",
-    "COMPSEL",
+    "COMPSEL 0:COMP; 1:counter",
     "COMP"
 ]
 bit_ranges = [
