@@ -6,7 +6,7 @@ def calculate_result():
 
     # 计算每一行的结果，并记录到日志文件
     row_results = []
-    for i, (bit_range, entry) in enumerate(zip(bit_ranges, bit_entries)):
+    for i, (reg_name, bit_range, entry) in enumerate(zip(reg_names, bit_ranges, bit_entries)):
         start_bit = bit_range[0]
         end_bit = bit_range[1]
         value = int(entry.get())
@@ -35,9 +35,21 @@ def reset_bits():
 window = tk.Tk()
 window.title("位值计算器")
 
-# 创建位值输入框、标签和位范围
+# 创建位值输入框、标签、位范围和寄存器名称
 bit_entries = []
 bit_labels = []
+reg_names = [
+    "ALTCOMPSEL",
+    "ALTCOMP",
+    "CAPTID",
+    "COUNTBRK",
+    "COUNTCLR",
+    "TRACE",
+    "COUNTSRC",
+    "WATCHRST",
+    "COMPSEL",
+    "COMP"
+]
 bit_ranges = [
     (15, 15),  # [15]
     (14, 12),  # [14:12]
@@ -51,29 +63,32 @@ bit_ranges = [
     (2, 0)     # [2:0]
 ]
 
-for i, bit_range in enumerate(bit_ranges):
+for i, (reg_name, bit_range) in enumerate(zip(reg_names, bit_ranges)):
     start_bit = bit_range[0]
     end_bit = bit_range[1]
     bit_label = tk.Label(window, text="[{}:{}]".format(start_bit, end_bit))
-    bit_label.grid(row=i, column=0)
+    bit_label.grid(row=i, column=1)
     bit_labels.append(bit_label)
     
+    reg_name_label = tk.Label(window, text=reg_name)
+    reg_name_label.grid(row=i, column=0)
+
     bit_entry = tk.Entry(window, width=5)
     bit_entry.insert(tk.END, "0")
-    bit_entry.grid(row=i, column=1)
+    bit_entry.grid(row=i, column=2)
     bit_entries.append(bit_entry)
 
 # 创建计算按钮
 calculate_button = tk.Button(window, text="计算", command=calculate_result)
-calculate_button.grid(row=len(bit_ranges), column=0, columnspan=2)
+calculate_button.grid(row=len(bit_ranges), column=0, columnspan=3)
 
 # 创建结果标签
 result_label = tk.Label(window, text="结果: ")
-result_label.grid(row=len(bit_ranges) + 1, column=0, columnspan=2)
+result_label.grid(row=len(bit_ranges) + 1, column=0, columnspan=3)
 
 # 创建重置按钮
 reset_button = tk.Button(window, text="重置", command=reset_bits)
-reset_button.grid(row=len(bit_ranges) + 2, column=0, columnspan=2)
+reset_button.grid(row=len(bit_ranges) + 2, column=0, columnspan=3)
 
 # 运行窗口主循环
 window.mainloop()
